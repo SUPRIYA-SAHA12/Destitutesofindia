@@ -1,17 +1,18 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useState, useMemo, useCallback, createContext, useContext } from 'react'
 import './index.css'
 
 
-import Home from './pages/home.jsx'
+ 
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
 import MissionVision from './pages/MissionVision.jsx'
 import Donate from './pages/Donate.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import Disclaimer from './pages/Disclaimer.jsx'
+import Home from './pages/Home.jsx'
 
-import { auth, GoogleAuthProvider, signInWithPopup, signInAnonymously, signOut } from './firebase.js'
+import { auth, GoogleAuthProvider, signInWithPopup, signInAnonymously, signOut } from './firebase.js'//auth means authentication ,it help us identify who the user in our app ,firebase services 
 import { onAuthStateChanged } from 'firebase/auth'
 
 const AuthContext = createContext(null)
@@ -21,7 +22,7 @@ function useAuth() {
 }
 
 function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
+  const [user,setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -66,31 +67,51 @@ function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
-<div className="p-4 bg-emerald-100 text-emerald-700 rounded">Tailwind test</div>
 
 function Navbar() {
   const { user, logout, loginWithGoogle, loginAnonymously } = useAuth()
   return (
-    <header className="border-b bg-white sticky top-0 z-40">
-      <div className="container-responsive flex items-center justify-between h-14">
-        <NavLink to="/" className="text-sky-600 font-bold">destitutesofindia.com</NavLink>
-        <nav className="flex items-center gap-3 text-sm">
-          <NavLink to="/" className={({isActive}) => isActive ? 'text-sky-600' : 'text-slate-600'}>Home</NavLink>
-          <NavLink to="/about" className={({isActive}) => isActive ? 'text-sky-600' : 'text-slate-600'}>About</NavLink>
-          <NavLink to="/mission-vision" className={({isActive}) => isActive ? 'text-sky-600' : 'text-slate-600'}>Mission & Vision</NavLink>
-          <NavLink to="/donate" className={({isActive}) => isActive ? 'text-sky-600' : 'text-slate-600'}>Donate</NavLink>
-          <NavLink to="/contact" className={({isActive}) => isActive ? 'text-sky-600' : 'text-slate-600'}>Contact</NavLink>
+    <header className="sticky top-0 z-40 bg-gradient-to-r from-emerald-600 via-green-600 to-lime-600 text-white shadow-lg backdrop-blur-sm">
+      <div className="container-responsive flex items-center justify-between h-16">
+        <NavLink to="/" className="font-bold tracking-wide flex items-center gap-2 hover:scale-105 transition-transform duration-300">
+          <span className="material-symbols-outlined text-2xl float">eco</span>
+          <span className="gradient-text text-lg font-semibold">destitutesofindia.com</span>
+        </NavLink>
+        <nav className="flex items-center gap-6 text-sm">
+          <NavLink to="/" className={({isActive}) => 
+            `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+          }>Home</NavLink>
+          <NavLink to="/about" className={({isActive}) => 
+            `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+          }>About</NavLink>
+          <NavLink to="/mission-vision" className={({isActive}) => 
+            `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+          }>Mission & Vision</NavLink>
+          <NavLink to="/donate" className={({isActive}) => 
+            `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+          }>Donate</NavLink>
+          <NavLink to="/contact" className={({isActive}) => 
+            `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+          }>Contact</NavLink>
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {user ? (
             <>
-              <span className="hidden sm:inline text-xs text-slate-600">{user.isAnonymous ? 'Anonymous' : (user.displayName || user.email)}</span>
-              <button onClick={logout} className="px-3 py-1 rounded bg-slate-900 text-white text-xs">Logout</button>
+              <span className="hidden sm:inline text-xs opacity-90 bg-white/10 px-2 py-1 rounded-lg transition-all duration-300 hover:bg-white/20">
+                {user.isAnonymous ? 'Anonymous' : (user.displayName || user.email)}
+              </span>
+              <button onClick={logout} className="btn-secondary bg-white/15 hover:bg-white/25 text-white text-xs flex items-center gap-1 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105">
+                <span className="material-symbols-outlined text-sm">logout</span> Logout
+              </button>
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <button onClick={loginAnonymously} className="px-3 py-1 rounded border text-xs">Post Anonymously</button>
-              <button onClick={loginWithGoogle} className="px-3 py-1 rounded bg-sky-600 text-white text-xs">Login with Google</button>
+              <button onClick={loginAnonymously} className="btn-secondary bg-white/15 hover:bg-white/25 text-white text-xs flex items-center gap-1 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105">
+                <span className="material-symbols-outlined text-sm">local_florist</span> Anonymous
+              </button>
+              <button onClick={loginWithGoogle} className="btn-primary bg-emerald-300 text-slate-900 text-xs flex items-center gap-1 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105">
+                <span className="material-symbols-outlined text-sm">park</span> Google
+              </button>
             </div>
           )}
         </div>
@@ -102,37 +123,62 @@ function Navbar() {
 
 function Footer() {
   return (
-    <footer className="border-t mt-10">
-      <div className="container-responsive py-8 text-sm text-slate-600 flex flex-col sm:flex-row items-center sm:justify-between gap-3">
-        <div>© {new Date().getFullYear()} destitutesofindia.com</div>
-        <nav className="flex items-center gap-4">
-          <NavLink to="/privacy">Privacy Policy</NavLink>
-          <NavLink to="/disclaimer">Disclaimer</NavLink>
+    <footer className="mt-10 bg-gradient-to-r from-lime-600 via-green-600 to-emerald-600 text-white">
+      <div className="container-responsive py-8 text-sm flex flex-col sm:flex-row items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-2 hover:scale-105 transition-transform duration-300">
+          <span className="material-symbols-outlined float">forest</span>
+          <span className="gradient-text font-semibold">© {new Date().getFullYear()} destitutesofindia.com</span>
+        </div>
+        <nav className="flex items-center gap-4 opacity-90 hover:opacity-100">
+          <NavLink to="/privacy" className="nav-link px-3 py-1 rounded-lg transition-all duration-300 hover:bg-white/10">Privacy Policy</NavLink>
+          <NavLink to="/disclaimer" className="nav-link px-3 py-1 rounded-lg transition-all duration-300 hover:bg-white/10">Disclaimer</NavLink>
         </nav>
       </div>
     </footer>
   )
 }
 
+function RoutedApp() {
+  const location = useLocation()
+  // Reveal-on-scroll: observe elements on each route change
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('reveal-visible')
+          io.unobserve(e.target)
+        }
+      })
+    }, { threshold: 0.12 })
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return () => io.disconnect()
+  }, [location.pathname])
+
+  return (
+    <div className="min-h-full flex flex-col" id="app-root">
+      <Navbar />
+      <main className="container-responsive py-6 flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/mission-vision" element={<MissionVision />} />
+          <Route path="/donate" element={<Donate />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
-        <div className="min-h-full flex flex-col">
-          <Navbar />
-          <main className="container-responsive py-6 flex-1">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/mission-vision" element={<MissionVision />} />
-              <Route path="/donate" element={<Donate />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/disclaimer" element={<Disclaimer />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <RoutedApp />
       </AuthProvider>
     </BrowserRouter>
   )

@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, signOut } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -10,13 +11,14 @@ const firebaseConfig = {
 //   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
 //   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
 //   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-           apiKey: "AIzaSyDIdf3EzzDmhXL-5TiPfwgDmH3reB3MkEE",
-           authDomain: "distritubeofindia.firebaseapp.com",
-            projectId: "distritubeofindia",
-            storageBucket: "distritubeofindia.firebasestorage.app",
-            messagingSenderId: "1090696562674",
-            appId: "1:1090696562674:web:d235db8dd9d374ed3b4d6b",
-            measurementId: "G-DBHTGXSDKH"
+apiKey: "AIzaSyCKKGVVYpyqdXOFWrf3L5SJoZVTyaKGYfw",
+authDomain: "newproject-1acc8.firebaseapp.com",
+projectId: "newproject-1acc8",
+storageBucket: "newproject-1acc8.firebasestorage.app",
+messagingSenderId: "333632590723",
+appId: "1:333632590723:web:c7ff689f6ee67684999cb6",
+measurementId: "G-JHFBYP5DG5" 
+              
 };
 
 // Validate required env vars. If missing, don't crash — export nulls so UI can render
@@ -35,7 +37,13 @@ if (missingKeys.length > 0) {
 } else {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
-  db = getFirestore(app);
+  // Use long-polling to avoid WebChannel 400 issues on some networks/proxies
+  db = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+    useFetchStreams: false,
+    // optional: tweak if you still see issues
+    // longPollingOptions: { timeoutSeconds: 30 },
+  });
   storage = getStorage(app);
 }
 

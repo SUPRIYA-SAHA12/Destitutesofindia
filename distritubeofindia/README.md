@@ -75,3 +75,10 @@ service firebase.storage {
 ## Notes
 
 - If you see 400 errors like INVALID_API_KEY or YOUR_PROJECT_ID in URLs, ensure `.env.local` values are set and restart dev server.
+frist App.jsx file 
+main function -App() in App() 
+                          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                           <AuthProvider> # AuthProvider()
+                                 <RoutedApp /> # RouteApp()
+                          </AuthProvider>  
+                          </BrowserRouter>
