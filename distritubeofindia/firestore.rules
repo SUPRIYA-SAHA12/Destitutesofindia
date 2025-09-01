@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Everyone can read posts
+    match /posts/{postId} {
+      allow read: if true;
+
+      // Authenticated users (including anonymous) can create posts
+      allow create: if request.auth != null
+        && request.resource.data.imageUrl is string
+        && request.resource.data.location is map
+        && request.resource.data.location.lat is number
+        && request.resource.data.location.lng is number
+        && (request.resource.data.caption == null || request.resource.data.caption is string)
+        && (request.resource.data.userId == null || request.resource.data.userId == request.auth.uid)
+        && request.resource.data.isAnonymous is bool
+        && request.resource.data.cautionAccepted == true
+        && request.resource.data.keys().hasOnly(['imageUrl','location','caption','userId','userDisplayName','isAnonymous','createdAt','cautionAccepted']);
+
+      // Only the owner can update/delete their own post
+      allow update, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // You can add more collections and rules here as needed
+  }
+}
+
+
+

@@ -8,7 +8,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 function PostCard({ post }) {
   return (
-    <div className="rounded border overflow-hidden bg-white">
+    <div className="rounded-xl border border-emerald-200 overflow-hidden bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <img src={post.imageUrl} alt="Post" className="w-full h-64 object-cover" />
       <div className="p-3 text-sm text-slate-700 space-y-1">
         <div className="flex items-center justify-between">
@@ -31,10 +31,13 @@ export default function Home() {
   const [posts, setPosts] = useState([])
   const [file, setFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState('')
+  const [sampleIndex, setSampleIndex] = useState(0)
   const [location, setLocation] = useState(null)
   const [caption, setCaption] = useState('')
   const [cautionAccepted, setCautionAccepted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const touchStartXRef = useRef(0)
+  const touchMovedRef = useRef(false)
 
   const fileInputRef = useRef(null)
   const videoRef = useRef(null)
@@ -114,6 +117,45 @@ export default function Home() {
     setPreviewUrl(url)
     return () => URL.revokeObjectURL(url)
   }, [file])
+
+  // Autoplay the understanding images one-by-one
+  useEffect(() => {
+    if (!sampleImages?.length) return
+    const id = setInterval(() => {
+      setSampleIndex((i) => (i + 1) % sampleImages.length)
+    }, 3500)
+    return () => clearInterval(id)
+  }, [])
+
+  const showPrevSample = useCallback(() => {
+    setSampleIndex((i) => (i - 1 + sampleImages.length) % sampleImages.length)
+  }, [])
+
+  const showNextSample = useCallback(() => {
+    setSampleIndex((i) => (i + 1) % sampleImages.length)
+  }, [])
+
+  const onTouchStart = useCallback((e) => {
+    if (!e.touches || e.touches.length === 0) return
+    touchStartXRef.current = e.touches[0].clientX
+    touchMovedRef.current = false
+  }, [])
+
+  const onTouchMove = useCallback((e) => {
+    touchMovedRef.current = true
+  }, [])
+
+  const onTouchEnd = useCallback((e) => {
+    if (!touchMovedRef.current) return
+    const endX = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : touchStartXRef.current
+    const deltaX = endX - touchStartXRef.current
+    const threshold = 40
+    if (deltaX > threshold) {
+      showPrevSample()
+    } else if (deltaX < -threshold) {
+      showNextSample()
+    }
+  }, [showPrevSample, showNextSample])
 
   const requestLocation = useCallback(() => {
     if (!('geolocation' in navigator)) {
@@ -302,39 +344,254 @@ export default function Home() {
       setSubmitting(false)
     }
   }, [canSubmit, user, file, caption, location, resetForm])
+  const currentNews = [
+    {
+      title: 'Emergency Food Distribution',
+      description: 'Local volunteers distributed food packets to 50+ homeless individuals in downtown area. Immediate assistance needed for medical supplies.',
+      date: '2 hours ago',
+      location: 'Downtown Market Area'
+    },
+    {
+      title: 'Shelter Support Required',
+      description: 'Temporary shelter opened for displaced families. Donations of blankets, clothes, and basic necessities urgently needed.',
+      date: '5 hours ago',
+      location: 'Community Center'
+    },
+    {
+      title: 'Medical Camp Success',
+      description: 'Free medical checkup camp served 100+ people. Follow-up care and medication support required for chronic patients.',
+      date: '1 day ago',
+      location: 'Public Health Center'
+    },
+    {
+      title: 'Education Support',
+      description: 'School supplies distributed to 25 children from low-income families. More books and stationery needed.',
+      date: '2 days ago',
+      location: 'Local School'
+    }
+  ]
+
 
   return (
      
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* News & Updates Section (placed right after navbar) */}
+      {/* <section className="w-full reveal slide-in-left">
+        <div className="rounded-xl border border-emerald-200 bg-green shadow-md p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <h3 className="text- font-semibold text-slate-400 flex items-center gap-2 mb-1">
+            <span className="material-symbols-outlined text-emerald-600 bg-blue">newspaper</span>
+            Community News & Updates
+          </h3>
+
+          {currentNews.length === 0 ? (
+            <p className="text-xs text-slate-700">No news available at the moment.</p>
+          ) : (
+            <div className="space-y-3">
+              {currentNews.map((news, index) => (
+                <div key={index} className="rounded-lg border border-emerald-200 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+                  <div className="flex items-center justify-between mb-1">
+                    <h4 className="font-medium text-slate-900 text-sm">{news.title}</h4>
+                    <span className="text-[10px] text-slate-600">{news.date}</span>
+                  </div>
+                  <p className="text-xs text-slate-800 mb-1">{news.description}</p>
+                  <p className="text-[10px] text-slate-600">
+                    <span className="material-symbols-outlined text-emerald-600 text-sm mr-1">place</span>
+                    {news.location}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section> */}
       {!firebaseReady && (
         <div className="rounded border p-3 text-sm bg-amber-50 border-amber-200 text-amber-900">
           Firebase is not fully configured. Add your keys to .env.local and restart the dev server. You can still view the UI but posting and feed are disabled.
         </div>
       )}
-
-      <section className="bg-emerald-50 border rounded p-4 reveal">
-        <h2 className="text-lg font-semibold text-slate-900">Post a Photo to Raise Awareness</h2>
+      
+        <h1 className="text-5xl font-bold text-green-600 text-center mt-3">
+        "𝘏𝘦𝘭𝘱𝘪𝘯𝘨 𝘰𝘵𝘩𝘦𝘳𝘴 𝘪𝘴 𝘭𝘪𝘬𝘦 𝘩𝘦𝘭𝘱𝘪𝘯𝘨 𝘺𝘰𝘶𝘳𝘴𝘦𝘭𝘧"
+      </h1>
+        <h3 className="text-center text-yellow-500-600">-Distritube of India</h3>
+      <section className="rounded-xl border border-emerald-200 bg-blue font-bold p-4 shadow-sm reveal scale-in transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+        <h2 className="text-lg font-bold text-blue-900 ">Post a Photo to Raise Awareness</h2>
         <p className="text-sm text-slate-600 mt-1">Please share only relevant images aimed at seeking help or highlighting genuine need. Inappropriate or irrelevant posts may lead to a ban and be reported.</p>
       </section>
 
-      {/* Understanding section: illustrative examples */}
-      <section className="reveal">
-        <h3 className="section-title text-slate-900 font-semibold mb-3">Understanding the Context</h3>
-        <p className="text-sm text-slate-600 mb-3">These example images illustrate the kind of dignified, relevant photos that help the community understand needs. Do not upload faces without consent or any harmful content.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {sampleImages.map((s, i) => (
-            <figure key={i} className="box overflow-hidden">
-              <img src={s.url} alt={s.caption} className="w-full h-40 object-cover" />
-              <figcaption className="p-2 text-xs text-slate-600">{s.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
+      {/* Understanding section: illustrative examples (carousel) */}
+      <section className=" flex  grid-cols-1 lg:grid-cols-9 gap-6 reveal justify-center ">
+  <div className="lg:col-span-3 lg:order-1 ">
+    {/* Outer wrapper with animated glow */}
+    <div className="relative">
+      <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-green-400 via-emerald-500 to-blue-500 animate-pulse blur opacity-70"></div>
+      <div className="relative rounded-xl border border-emerald-300 bg-gradient-to-br from-green-200 via-green-300 to-blue-500 p-5 shadow-lg space-y-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl reveal slide-in-left">
+        <h3 className="text-center text-2xl font-bold text-green-600 animate-pulse drop-shadow-lg">
+          ✨ Create a Post ✨
+        </h3>
+        {loading ? (
+          <div className="text-sm text-slate-600">Checking sign-in…</div>
+        ) : user ? (
+          <div className="space-y-4">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={onSelectFile}
+              className="block w-full text-sm border border-emerald-300 rounded-lg p-2 bg-white shadow-sm hover:border-emerald-500"
+            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={openCamera}
+                disabled={cameraLoading}
+                className={`px-3 py-1 rounded-lg border border-emerald-500 text-xs flex items-center gap-1 bg-white shadow-md transition-all duration-300 ${
+                  cameraLoading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-emerald-50 hover:scale-105"
+                }`}
+              >
+                <span
+                  className={`material-symbols-outlined text-green-600 ${
+                    cameraLoading ? "spin" : ""
+                  }`}
+                >
+                  {cameraLoading ? "sync" : "photo_camera"}
+                </span>
+                {cameraLoading ? "Opening..." : "Open Camera"}
+              </button>
+              {cameraOpen && (
+                <button
+                  type="button"
+                  onClick={closeCamera}
+                  className="px-3 py-1 rounded-lg border text-xs flex items-center gap-1 bg-red-50 hover:bg-red-100 transition-all duration-300"
+                >
+                  <span className="material-symbols-outlined text-rose-600">
+                    close
+                  </span>
+                  Close
+                </button>
+              )}
+            </div>
+            {cameraError && (
+              <div className="text-xs text-rose-600">{cameraError}</div>
+            )}
+            {cameraOpen && (
+              <div className="space-y-3">
+                <div className="rounded-lg overflow-hidden border-4 border-emerald-400 bg-black relative shadow-lg">
+                  {/* Logo in Camera Section */}
+                  <div className="absolute top-2 left-2 z-10 flex items-center gap-2 bg-white/70 px-2 py-1 rounded-full shadow-md">
+                    <img
+                      src="/logo.png"
+                      alt="Logo"
+                      className="w-6 h-6 rounded-full"
+                    />
+                    <span className="text-green-600 font-bold text-sm">
+                      Live Camera
+                    </span>
+                  </div>
+                  <video
+                    ref={videoRef}
+                    className="w-full aspect-video object-cover"
+                    playsInline
+                    muted
+                    autoPlay
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="border-2 border-white border-dashed rounded-lg w-48 h-32 opacity-50"></div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={captureFromCamera}
+                    className="btn-primary px-4 py-2 rounded-lg text-sm flex items-center gap-2 bg-emerald-500 text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-emerald-600"
+                  >
+                    <span className="material-symbols-outlined">camera</span>
+                    Capture Photo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeCamera}
+                    className="btn-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-2 bg-slate-200 text-slate-700 shadow-md transition-all duration-300 hover:scale-110 hover:bg-slate-300"
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                    Cancel
+                  </button>
+                </div>
+                <canvas ref={canvasRef} className="hidden" />
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="px-3 py-1 rounded-lg border text-xs bg-emerald-500 text-white shadow-md transition-all duration-300 hover:bg-emerald-600 hover:scale-105 hover:shadow-lg"
+                onClick={requestLocation}
+              >
+                Use Current Location
+              </button>
+              {location && (
+                <span className="text-xs text-green-700 font-medium">
+                  {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
+                </span>
+              )}
+            </div>
+            <input
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="Caption (optional)"
+              className="w-full border rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-emerald-400"
+            />
+            <label className="flex items-start gap-2 text-xs text-slate-700">
+              <input
+                type="checkbox"
+                checked={cautionAccepted}
+                onChange={(e) => setCautionAccepted(e.target.checked)}
+              />
+              <span className="text-green-700 font-medium">
+                I confirm this post is relevant, respectful, and does not
+                violate privacy. I understand misuse may lead to a ban and
+                reporting to authorities.
+              </span>
+            </label>
+            <button
+              disabled={!canSubmit}
+              onClick={handleSubmit}
+              className={`px-4 py-2 rounded-lg text-sm text-white shadow-md transition-all duration-300 ${
+                canSubmit
+                  ? "bg-emerald-600 hover:bg-emerald-700 hover:scale-105 hover:shadow-lg"
+                  : "bg-slate-400 cursor-not-allowed"
+              }`}
+            >
+              {submitting ? "Posting…" : "Post"}
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3 text-sm">
+            <p className="text-slate-700 text-center font-medium">
+              Please sign in to post. You may choose to post anonymously.
+            </p>
+            <div className="flex items-center gap-2 justify-center">
+              <button className="px-3 py-1 rounded-lg border text-xs bg-white shadow hover:bg-emerald-50">
+                Post Anonymously
+              </button>
+              <button className="px-3 py-1 rounded-lg bg-sky-600 text-white text-xs shadow hover:bg-sky-700">
+                Login with Google
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 reveal">
-        <div className="lg:col-span-1">
-          <div className="rounded border p-4 bg-white space-y-3">
-            <h3 className="font-medium text-slate-900">Create a Post</h3>
+      
+      {/* <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 reveal justify-center">
+        <div className="lg:col-span-3 lg:order-1">
+          <div className="rounded-xl border border-emerald-200 bg-blue p-4 shadow-sm space-y-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-md reveal slide-in-left ">
+            <h3 className=" text-slate-900  bg-blue justify-center" >Create a Post</h3>
             {loading ? (
               <div className="text-sm text-slate-600">Checking sign-in…</div>
             ) : user ? (
@@ -421,33 +678,115 @@ export default function Home() {
             )}
           </div>
         </div>
+        </section> */}
+        {/* News & Updates Section moved above, removed from grid */}
+
         {/* <div className="p-4 bg-emerald-100 text-emerald-400 rounded">Tailwind test</div> */}
-        <div className="lg:col-span-2">
+        <div className="  lg:col-span-8 lg:order-2">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-slate-900 flex items-center gap-2"><span className="material-symbols-outlined text-sky-600">imagesmode</span>Latest Posts</h3>
             <span className="text-xs text-slate-500">{posts.length} item(s)</span>
           </div>
           {previewUrl && (
-            <div className="rounded border p-2 bg-white mb-4">
+            <div className="rounded-lg border border-emerald-200 bg-white p-2 mb-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md reveal scale-in">
               <h4 className="text-sm font-medium mb-2">Preview</h4>
               <img src={previewUrl} alt="Preview" className="w-full max-h-96 object-contain" />
             </div>
           )}
 
           {posts.length === 0 ? (
-            <div className="rounded border bg-white p-6 text-sm text-slate-600 flex items-center gap-2">
+            <div className="rounded-lg border border-emerald-200 bg-white p-6 text-sm text-slate-600 flex items-center gap-2 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
               <span className="material-symbols-outlined text-slate-500">hourglass_empty</span>
               No posts yet — be the first to share a relevant, respectful photo.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal">
               {posts.map((p) => (
                 <PostCard key={p.id} post={p} />
               ))}
             </div>
           )}
         </div>
+        <div className="hidden lg:block lg:col-span-3 lg:order-3">
+        
+        </div>
+        <section className="reveal">
+          
+        <h3 className="section-title text-blue-900 font-bold  mb-3">Understanding the Context</h3>
+        <p className="text-bold text-green-600 mb-3">These example images illustrate the kind of dignified, relevant photos that help the community understand needs. Do not upload faces without consent or any harmful content.</p>
+        <div className="relative rounded-xl border border-emerald-200 bg-white shadow-sm overflow-hidden"
+             onTouchStart={onTouchStart}
+             onTouchMove={onTouchMove}
+             onTouchEnd={onTouchEnd}>
+          <figure className="transition-all duration-500">
+            <img src={sampleImages[sampleIndex].url} alt={sampleImages[sampleIndex].caption} className="w-full h-60 sm:h-72 object-cover" />
+            <figcaption className="p-3 text-xs text-slate-700">{sampleImages[sampleIndex].caption}</figcaption>
+          </figure>
+          <button type="button" onClick={showPrevSample} aria-label="Previous image" className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white shadow transition">
+            <span className="material-symbols-outlined">chevron_left</span>
+          </button>
+          <button type="button" onClick={showNextSample} aria-label="Next image" className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white shadow transition">
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1">
+            {sampleImages.map((_, i) => (
+              <button key={i} onClick={() => setSampleIndex(i)} aria-label={`Go to image ${i + 1}`} className={`h-2 w-2 rounded-full transition ${i === sampleIndex ? 'bg-emerald-600' : 'bg-emerald-200 hover:bg-emerald-300'}`}></button>
+            ))}
+          </div>
+        </div>
       </section>
+      
+      <section className="w-full flex justify-center px-4 py-6 bg-green">
+  <div className="w-full max-w-3xl rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-blue shadow-md p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    
+    {/* Header */}
+    <h3 className="text-2xl font-bold text-green-700 flex items-center gap-2 mb-4 ">
+      <span className="material-symbols-outlined text-emerald-600 bg-blue rounded-full p-1 shadow-sm">
+        newspaper
+      </span>
+      Community News & Updates
+    </h3>
+
+    {/* News Content */}
+    {currentNews.length === 0 ? (
+      <p className="text-sm text-slate-500">No news available at the moment.</p>
+    ) : (
+      <div className="space-y-4">
+        {currentNews.map((news, index) => (
+          <div
+            key={index}
+            className="rounded-lg border border-emerald-200 bg-green p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-emerald-400"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <h4 className="font-medium text-slate-900 text-sm flex items-center gap-1">
+                <span className="material-symbols-outlined text-emerald-500 text-base">
+                  article
+                </span>
+                {news.title}
+              </h4>
+              <span className="text-[11px] text-slate-500 flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">
+                  calendar_month
+                </span>
+                {news.date}
+              </span>
+            </div>
+            <p className="text-xs text-slate-700 mb-2">{news.description}</p>
+            <p className="text-[11px] text-slate-600 flex items-center gap-1">
+              <span className="material-symbols-outlined text-emerald-600 text-sm">
+                place
+              </span>
+              {news.location}
+            </p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+
+      
     </div>
   )
 }
