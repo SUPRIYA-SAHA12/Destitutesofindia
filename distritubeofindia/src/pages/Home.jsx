@@ -614,7 +614,7 @@ export default function Home() {
       </h1>
         <h3 className="text-center text-yellow-500-600">-Destritube of India</h3>
         
-<h3 className="text-center text-lg md:text-xl lg:text-2xl font-bold text-blue-600 relative">
+<h3 className="text-center text-lg md:text-xl lg:text-1xl font-bold text-blue-600 relative">
   <span className="relative z-10">
     DestitutesOfIndia is committed to shining a light on the lives of those often overlooked. Through collaboration, transparency, and compassion, we connect communities, volunteers, and organizations to provide timely and meaningful support.
   </span>
@@ -662,6 +662,7 @@ export default function Home() {
                 <div className="text-xs text-amber-700 bg-amber-50 p-2 rounded border">
                   <strong>Note:</strong> Camera access requires HTTPS or localhost. If you're on HTTP, please use the file upload option above.
                 </div>
+
               )}
               
                              <div className="flex items-center gap-2">

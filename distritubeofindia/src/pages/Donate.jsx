@@ -103,10 +103,10 @@ export default function Donate() {
   const presetAmounts = [100, 500, 1000, 2000, 5000]
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="space-y-4 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <header className="text-center reveal">
-        <h1 className="text-4xl sm:text-5xl font-bold text-green-600 mb-4">
+        <h1 className="text-3xl sm:text-3xl font-bold text-green-600 mb-4">
           Make a Difference Today
         </h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
