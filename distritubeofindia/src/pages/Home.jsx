@@ -46,7 +46,78 @@ export default function Home() {
   const [cameraError, setCameraError] = useState('')
   const [cameraLoading, setCameraLoading] = useState(false)
 
+  // Debug camera functionality on component mount
+  useEffect(() => {
+    console.log('Home component mounted, checking camera support...')
+    console.log('navigator.mediaDevices:', !!navigator.mediaDevices)
+    console.log('navigator.mediaDevices.getUserMedia:', !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia))
+    console.log('HTTPS:', window.location.protocol === 'https:')
+    console.log('Localhost:', window.location.hostname === 'localhost')
+  }, [])
+
   const firebaseReady = !!db && !!storage
+
+  // Check camera availability
+  const [cameraAvailable, setCameraAvailable] = useState(false)
+  const [streamActive, setStreamActive] = useState(false)
+  
+  useEffect(() => {
+    const checkCameraAvailability = async () => {
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          // Check if we can enumerate devices
+          const devices = await navigator.mediaDevices.enumerateDevices()
+          const videoDevices = devices.filter(device => device.kind === 'videoinput')
+          setCameraAvailable(videoDevices.length > 0)
+          console.log('Camera devices found:', videoDevices.length)
+          
+          // Log device details for debugging
+          videoDevices.forEach((device, index) => {
+            console.log(`Camera ${index + 1}:`, device.label || `Camera ${index + 1}`, device.deviceId)
+          })
+        } else {
+          setCameraAvailable(false)
+        }
+      } catch (error) {
+        console.error('Error checking camera availability:', error)
+        setCameraAvailable(false)
+      }
+    }
+    
+    checkCameraAvailability()
+  }, [])
+  
+     // Monitor video stream status
+   useEffect(() => {
+     if (videoRef.current && cameraOpen) {
+       const checkStream = setInterval(() => {
+         const video = videoRef.current
+         if (video && video.videoWidth > 0 && video.videoHeight > 0) {
+           setStreamActive(true)
+         } else {
+           setStreamActive(false)
+           
+           // If we have a stream but no video dimensions, try to fix it
+           if (video?.srcObject && !video.videoWidth) {
+             console.log('Stream exists but no video, attempting to fix...')
+             const currentStream = video.srcObject
+             video.srcObject = null
+             setTimeout(() => {
+               if (video) {
+                 video.srcObject = currentStream
+                 video.load()
+                 video.play().catch(e => console.error('Auto-fix play failed:', e))
+               }
+             }, 200)
+           }
+         }
+       }, 1000) // Check every second
+       
+       return () => clearInterval(checkStream)
+     }
+   }, [cameraOpen])
+  
+  
 
   // Sample royalty-free illustrative images (Unsplash) to explain the context
   const sampleImages = [
@@ -181,48 +252,162 @@ export default function Home() {
     } catch {}
   }
 
-  const openCamera = useCallback(async () => {
+    const openCamera = useCallback(async () => {
     setCameraError('')
     setCameraLoading(true)
-    try {
-      // Try different camera constraints for better compatibility
-      const constraints = {
-        video: {
-          facingMode: 'environment',
-          width: { ideal: 1920, min: 1280 },
-          height: { ideal: 1080, min: 720 }
-        },
-        audio: false
-      }
-      
-      const stream = await navigator.mediaDevices.getUserMedia(constraints)
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        // Wait for video to be ready
-        await new Promise((resolve) => {
-          videoRef.current.onloadedmetadata = resolve
-        })
-        await videoRef.current.play()
-      }
-      setCameraOpen(true)
+    setStreamActive(false) // Reset stream status
+    
+    // Check if getUserMedia is supported
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setCameraError('Camera access is not supported in this browser. Please use a modern browser or try uploading a file instead.')
       setCameraLoading(false)
-    } catch (err) {
+      return
+    }
+
+    try {
+      console.log('Attempting to open camera...')
+      
+             // Use simpler, more reliable constraints that work better
+       const constraints = {
+         video: {
+           width: { ideal: 640, min: 320 },
+           height: { ideal: 480, min: 240 }
+         },
+         audio: false
+       }
+       
+       console.log('Requesting camera with constraints:', constraints)
+       const stream = await navigator.mediaDevices.getUserMedia(constraints)
+      
+      console.log('Stream obtained successfully:', stream)
+      console.log('Stream tracks:', stream.getTracks())
+      
+                    if (videoRef.current) {
+         // Clear any existing stream first
+         if (videoRef.current.srcObject) {
+           const oldStream = videoRef.current.srcObject
+           oldStream.getTracks().forEach(track => track.stop())
+         }
+         
+         // Set the new stream
+         videoRef.current.srcObject = stream
+         
+         // Force the video to load and play
+         videoRef.current.load()
+         
+         try {
+           await videoRef.current.play()
+           console.log('Video play() successful')
+           
+                    // Force a check for stream activity after a short delay
+         setTimeout(() => {
+           if (videoRef.current && videoRef.current.videoWidth > 0) {
+             setStreamActive(true)
+             console.log('Stream confirmed active after play')
+           } else {
+             // If stream still not working, try to force it
+             console.log('Stream not working, attempting to force refresh...')
+             const currentStream = videoRef.current.srcObject
+             if (currentStream) {
+               videoRef.current.srcObject = null
+               setTimeout(() => {
+                 if (videoRef.current) {
+                   videoRef.current.srcObject = currentStream
+                   videoRef.current.load()
+                   videoRef.current.play().catch(e => console.error('Force play failed:', e))
+                 }
+               }, 100)
+             }
+           }
+         }, 500)
+           
+         } catch (playError) {
+           console.error('Video play() failed:', playError)
+           // Continue anyway as the stream might still work
+         }
+         
+         console.log('Camera opened successfully')
+       }
+             setCameraOpen(true)
+       setCameraLoading(false)
+       
+       // Add a retry mechanism if the stream doesn't work after 2 seconds
+       setTimeout(() => {
+         if (videoRef.current && !videoRef.current.videoWidth && videoRef.current.srcObject) {
+           console.log('Stream not working after 2 seconds, retrying...')
+           const currentStream = videoRef.current.srcObject
+           videoRef.current.srcObject = null
+           setTimeout(() => {
+             if (videoRef.current) {
+               videoRef.current.srcObject = currentStream
+               videoRef.current.load()
+               videoRef.current.play().catch(e => console.error('Retry play failed:', e))
+             }
+           }, 100)
+         }
+       }, 2000)
+       
+     } catch (err) {
       console.error('Camera error:', err)
+      
       // Try fallback constraints if the first attempt fails
       try {
-        const fallbackStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'environment' }, 
-          audio: false 
-        })
-        if (videoRef.current) {
-          videoRef.current.srcObject = fallbackStream
-          await videoRef.current.play()
-        }
+        console.log('Trying fallback camera constraints...')
+                 const fallbackConstraints = { 
+           video: { 
+             width: { min: 320 },
+             height: { min: 240 }
+           }, 
+           audio: false 
+         }
+        
+        const fallbackStream = await navigator.mediaDevices.getUserMedia(fallbackConstraints)
+                 if (videoRef.current) {
+           // Clear any existing stream first
+           if (videoRef.current.srcObject) {
+             const oldStream = videoRef.current.srcObject
+             oldStream.getTracks().forEach(track => track.stop())
+           }
+           
+           videoRef.current.srcObject = fallbackStream
+           videoRef.current.load()
+           
+           try {
+             await videoRef.current.play()
+             
+             // Force a check for stream activity after a short delay
+             setTimeout(() => {
+               if (videoRef.current && videoRef.current.videoWidth > 0) {
+                 setStreamActive(true)
+               }
+             }, 1000)
+             
+           } catch (playError) {
+             console.error('Fallback video play() failed:', playError)
+             // Continue anyway as the stream might still work
+           }
+         }
         setCameraOpen(true)
         setCameraLoading(false)
+        console.log('Camera opened with fallback constraints')
       } catch (fallbackErr) {
-        setCameraError('Unable to access camera. Please check permissions and try again.')
+        console.error('Fallback camera error:', fallbackErr)
+        
+        // Provide specific error messages based on error type
+        let errorMessage = 'Unable to access camera. '
+        if (fallbackErr.name === 'NotAllowedError') {
+          errorMessage += 'Camera permission denied. Please allow camera access and try again.'
+        } else if (fallbackErr.name === 'NotFoundError') {
+          errorMessage += 'No camera found on this device.'
+        } else if (fallbackErr.name === 'NotReadableError') {
+          errorMessage += 'Camera is already in use by another application.'
+        } else if (fallbackErr.name === 'OverconstrainedError') {
+          errorMessage += 'Camera constraints not supported. Please try uploading a file instead.'
+        } else {
+          errorMessage += `Error: ${fallbackErr.message}. Please check permissions and try again.`
+        }
+        
+        setCameraError(errorMessage)
         setCameraOpen(false)
         setCameraLoading(false)
       }
@@ -245,6 +430,10 @@ export default function Home() {
     }
 
     try {
+      console.log('Attempting to capture photo...')
+      console.log('Video ready state:', video.readyState)
+      console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight)
+      
       // Wait for video to be ready
       if (video.readyState < 2) {
         setCameraError('Camera not ready. Please wait a moment and try again.')
@@ -256,10 +445,12 @@ export default function Home() {
       const height = video.videoHeight
       
       if (!width || !height) {
-        setCameraError('Invalid video dimensions')
+        setCameraError('Invalid video dimensions. Please try again.')
         return
       }
 
+      console.log('Setting canvas dimensions to:', width, 'x', height)
+      
       // Set canvas size to match video
       canvas.width = width
       canvas.height = height
@@ -274,12 +465,16 @@ export default function Home() {
       ctx.clearRect(0, 0, width, height)
       ctx.drawImage(video, 0, 0, width, height)
 
+      console.log('Image captured to canvas, converting to blob...')
+
       // Convert to blob with better quality
       canvas.toBlob((blob) => {
         if (!blob) {
           setCameraError('Failed to capture image')
           return
         }
+        
+        console.log('Blob created, size:', blob.size, 'bytes')
         
         const capturedFile = new File([blob], `camera-${Date.now()}.jpg`, { 
           type: 'image/jpeg',
@@ -288,6 +483,7 @@ export default function Home() {
         
         setFile(capturedFile)
         closeCamera()
+        console.log('Photo captured successfully')
       }, 'image/jpeg', 0.95) // Higher quality
       
     } catch (err) {
@@ -441,88 +637,206 @@ export default function Home() {
               onChange={onSelectFile}
               className="block w-full text-sm border border-emerald-300 rounded-lg p-2 bg-white shadow-sm hover:border-emerald-500"
             />
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={openCamera}
-                disabled={cameraLoading}
-                className={`px-3 py-1 rounded-lg border border-emerald-500 text-xs flex items-center gap-1 bg-white shadow-md transition-all duration-300 ${
-                  cameraLoading
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-emerald-50 hover:scale-105"
-                }`}
-              >
-                <span
-                  className={`material-symbols-outlined text-green-600 ${
-                    cameraLoading ? "spin" : ""
-                  }`}
-                >
-                  {cameraLoading ? "sync" : "photo_camera"}
+            <div className="space-y-2">
+              {/* Camera Status Indicator */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className={`w-2 h-2 rounded-full ${cameraAvailable ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                <span className={cameraAvailable ? 'text-green-700' : 'text-red-700'}>
+                  {cameraAvailable ? 'Camera Available' : 'Camera Not Available'}
                 </span>
-                {cameraLoading ? "Opening..." : "Open Camera"}
-              </button>
-              {cameraOpen && (
-                <button
-                  type="button"
-                  onClick={closeCamera}
-                  className="px-3 py-1 rounded-lg border text-xs flex items-center gap-1 bg-red-50 hover:bg-red-100 transition-all duration-300"
-                >
-                  <span className="material-symbols-outlined text-rose-600">
-                    close
-                  </span>
-                  Close
-                </button>
+              </div>
+              {!cameraAvailable && (
+                <div className="text-xs text-amber-700 bg-amber-50 p-2 rounded border">
+                  <strong>Note:</strong> Camera access requires HTTPS or localhost. If you're on HTTP, please use the file upload option above.
+                </div>
               )}
+              
+                             <div className="flex items-center gap-2">
+                 <button
+                   type="button"
+                   onClick={openCamera}
+                   disabled={cameraLoading || !cameraAvailable}
+                   className={`px-3 py-1 rounded-lg border border-emerald-500 text-xs flex items-center gap-1 bg-white shadow-md transition-all duration-300 ${
+                     cameraLoading || !cameraAvailable
+                       ? "opacity-50 cursor-not-allowed"
+                       : "hover:bg-emerald-50 hover:scale-105"
+                   }`}
+                 >
+                   <span
+                     className={`material-symbols-outlined text-green-600 ${
+                       cameraLoading ? "spin" : ""
+                     }`}
+                   >
+                     {cameraLoading ? "sync" : "photo_camera"}
+                   </span>
+                   {cameraLoading ? "Opening..." : "Open Camera"}
+                 </button>
+                 
+                                   
+                 
+                  {cameraOpen && (
+                   <button
+                     type="button"
+                     onClick={closeCamera}
+                     className="px-3 py-1 rounded-lg border text-xs flex items-center gap-1 bg-red-50 hover:bg-red-100 transition-all duration-300"
+                   >
+                     <span className="material-symbols-outlined text-rose-600">
+                       close
+                     </span>
+                     Close
+                   </button>
+                 )}
+               </div>
             </div>
             {cameraError && (
-              <div className="text-xs text-rose-600">{cameraError}</div>
+              <div className="space-y-2">
+                <div className="text-xs text-rose-600">{cameraError}</div>
+                <div className="text-xs text-slate-600 bg-slate-50 p-2 rounded border">
+                  <strong>Troubleshooting:</strong>
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    <li>Make sure you're using HTTPS (required for camera access)</li>
+                    <li>Check if camera permissions are allowed in your browser</li>
+                    <li>Try refreshing the page and allowing camera access when prompted</li>
+                    <li>If camera still doesn't work, use the file upload option above</li>
+                  </ul>
+                </div>
+              </div>
             )}
             {cameraOpen && (
               <div className="space-y-3">
-                <div className="rounded-lg overflow-hidden border-4 border-emerald-400 bg-black relative shadow-lg">
-                  {/* Logo in Camera Section */}
-                  <div className="absolute top-2 left-2 z-10 flex items-center gap-2 bg-white/70 px-2 py-1 rounded-full shadow-md">
-                    <img
-                      src="/logo.png"
-                      alt="Logo"
-                      className="w-6 h-6 rounded-full"
-                    />
-                    <span className="text-green-600 font-bold text-sm">
-                      Live Camera
-                    </span>
-                  </div>
-                  <video
-                    ref={videoRef}
-                    className="w-full aspect-video object-cover"
-                    playsInline
-                    muted
-                    autoPlay
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="border-2 border-white border-dashed rounded-lg w-48 h-32 opacity-50"></div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={captureFromCamera}
-                    className="btn-primary px-4 py-2 rounded-lg text-sm flex items-center gap-2 bg-emerald-500 text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-emerald-600"
-                  >
-                    <span className="material-symbols-outlined">camera</span>
-                    Capture Photo
-                  </button>
-                  <button
-                    type="button"
-                    onClick={closeCamera}
-                    className="btn-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-2 bg-slate-200 text-slate-700 shadow-md transition-all duration-300 hover:scale-110 hover:bg-slate-300"
-                  >
-                    <span className="material-symbols-outlined">close</span>
-                    Cancel
-                  </button>
-                </div>
+                                 <div className="rounded-lg overflow-hidden border-4 border-emerald-400 bg-black relative shadow-lg">
+                   {/* Logo in Camera Section */}
+                   <div className="absolute top-2 left-2 z-10 flex items-center gap-2 bg-white/70 px-2 py-1 rounded-full shadow-md">
+                     <img
+                       src="/logo.png"
+                       alt="Logo"
+                       className="w-6 h-6 rounded-full"
+                     />
+                     <span className="text-green-600 font-bold text-sm">
+                       Live Camera
+                     </span>
+                   </div>
+                   
+                   {/* Camera Loading Indicator */}
+                   {cameraLoading && (
+                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-20">
+                       <div className="text-white text-center">
+                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-2"></div>
+                         <p className="text-sm">Opening camera...</p>
+                       </div>
+                     </div>
+                   )}
+                   
+                                                           <video
+                       ref={videoRef}
+                       className="w-full aspect-video object-cover"
+                       playsInline
+                       muted
+                       autoPlay
+                                               onLoadedMetadata={() => {
+                          if (videoRef.current?.videoWidth > 0) {
+                            setStreamActive(true)
+                          }
+                        }}
+                                               onCanPlay={() => {
+                          if (videoRef.current?.videoWidth > 0) {
+                            setStreamActive(true)
+                          }
+                        }}
+                        onError={(e) => {
+                          console.error('Video error:', e)
+                        }}
+                        onPlay={() => {
+                          // Check if stream is actually working
+                          setTimeout(() => {
+                            if (videoRef.current && videoRef.current.videoWidth > 0) {
+                              setStreamActive(true)
+                            }
+                          }, 100)
+                        }}
+                       style={{ backgroundColor: '#000' }}
+                     />
+                     
+                     
+                   
+                   {/* Camera Status Overlay */}
+                   {!cameraLoading && !streamActive && (
+                     <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-10">
+                       <div className="text-white text-center p-4">
+                         <span className="material-symbols-outlined text-4xl mb-2 block">camera_alt</span>
+                         <p className="text-sm">Camera initializing...</p>
+                         <p className="text-xs opacity-75 mt-1">Please wait for video feed</p>
+                       </div>
+                     </div>
+                   )}
+                   
+                   {/* Stream Active Indicator */}
+                   {streamActive && (
+                     <div className="absolute top-2 right-2 z-10 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                       Live
+                     </div>
+                   )}
+                   
+                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                     <div className="border-2 border-white border-dashed rounded-lg w-48 h-32 opacity-50"></div>
+                   </div>
+                 </div>
+                                 <div className="flex items-center gap-3">
+                   <button
+                     type="button"
+                     onClick={captureFromCamera}
+                     className="btn-primary px-4 py-2 rounded-lg text-sm flex items-center gap-2 bg-emerald-500 text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-emerald-600"
+                   >
+                     <span className="material-symbols-outlined">camera</span>
+                     Capture Photo
+                   </button>
+                   
+                   
+                   
+                   <button
+                     type="button"
+                     onClick={closeCamera}
+                     className="btn-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-2 bg-slate-200 text-slate-700 shadow-md transition-all duration-300 hover:scale-110 hover:bg-slate-300"
+                   >
+                     <span className="material-symbols-outlined">close</span>
+                     Cancel
+                   </button>
+                 </div>
                 <canvas ref={canvasRef} className="hidden" />
               </div>
             )}
+            
+            {/* Photo Preview in Form */}
+            {previewUrl && (
+              <div className="rounded-lg border border-emerald-200 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                <h4 className="text-sm font-medium mb-2 text-slate-700 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-emerald-600">image</span>
+                  Photo Preview
+                </h4>
+                <div className="relative">
+                  <img 
+                    src={previewUrl} 
+                    alt="Preview" 
+                    className="w-full max-h-48 object-contain rounded border border-slate-200" 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFile(null)
+                      setPreviewUrl('')
+                    }}
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    title="Remove photo"
+                  >
+                    <span className="material-symbols-outlined text-sm">close</span>
+                  </button>
+                </div>
+                <p className="text-xs text-slate-500 mt-2">
+                  {file?.name || 'Captured photo'} • {file?.size ? `${(file.size / 1024).toFixed(1)} KB` : 'Ready to post'}
+                </p>
+              </div>
+            )}
+            
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -572,14 +886,20 @@ export default function Home() {
             <p className="text-slate-700 text-center font-medium">
               Please sign in to post. You may choose to post anonymously.
             </p>
-            <div className="flex items-center gap-2 justify-center">
-              <button className="px-3 py-1 rounded-lg border text-xs bg-white shadow hover:bg-emerald-50">
-                Post Anonymously
-              </button>
-              <button className="px-3 py-1 rounded-lg bg-sky-600 text-white text-xs shadow hover:bg-sky-700">
-                Login with Google
-              </button>
-            </div>
+                         <div className="flex items-center gap-2 justify-center">
+               <button 
+                 onClick={loginAnonymously}
+                 className="px-3 py-1 rounded-lg border text-xs bg-white shadow hover:bg-emerald-50 transition-all duration-300 hover:scale-105"
+               >
+                 Post Anonymously
+               </button>
+               <button 
+                 onClick={loginWithGoogle}
+                 className="px-3 py-1 rounded-lg bg-sky-600 text-white text-xs shadow hover:bg-sky-700 transition-all duration-300 hover:scale-105"
+               >
+                 Login with Google
+               </button>
+             </div>
           </div>
         )}
       </div>
