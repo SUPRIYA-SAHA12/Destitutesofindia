@@ -413,7 +413,7 @@ export default function Home() {
         <h1 className="text-5xl font-bold text-green-600 text-center mt-3">
         "𝘏𝘦𝘭𝘱𝘪𝘯𝘨 𝘰𝘵𝘩𝘦𝘳𝘴 𝘪𝘴 𝘭𝘪𝘬𝘦 𝘩𝘦𝘭𝘱𝘪𝘯𝘨 𝘺𝘰𝘶𝘳𝘴𝘦𝘭𝘧"
       </h1>
-        <h3 className="text-center text-yellow-500-600">-Distritube of India</h3>
+        <h3 className="text-center text-yellow-500-600">-Destritube of India</h3>
       <section className="rounded-xl border border-emerald-200 bg-blue font-bold p-4 shadow-sm reveal scale-in transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
         <h2 className="text-lg font-bold text-blue-900 ">Post a Photo to Raise Awareness</h2>
         <p className="text-sm text-slate-600 mt-1">Please share only relevant images aimed at seeking help or highlighting genuine need. Inappropriate or irrelevant posts may lead to a ban and be reported.</p>
