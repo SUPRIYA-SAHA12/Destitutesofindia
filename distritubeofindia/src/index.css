@@ -7,11 +7,11 @@ html, body, #root {
 }
 body {
   margin: 0;
-  background: linear-gradient(60deg,rgb(71, 182, 216)10%,rgb(216, 239, 237) 70%);
+  background: linear-gradient(60deg,rgb(15, 204, 31)10%,rgb(216, 239, 237) 70%);
     
 
   
-  color: #0f172a; /* slate-900 */
+  color:rgb(6, 41, 122); /* slate-900 */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 

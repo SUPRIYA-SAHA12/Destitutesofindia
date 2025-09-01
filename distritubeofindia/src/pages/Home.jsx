@@ -5,6 +5,9 @@ import { db, storage } from '../firebase.js'
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
+import GreenCTAButton from "../pages/GreenCTAButton"// adjust path if needed
+
+
 
 function PostCard({ post }) {
   return (
@@ -414,10 +417,20 @@ export default function Home() {
         "𝘏𝘦𝘭𝘱𝘪𝘯𝘨 𝘰𝘵𝘩𝘦𝘳𝘴 𝘪𝘴 𝘭𝘪𝘬𝘦 𝘩𝘦𝘭𝘱𝘪𝘯𝘨 𝘺𝘰𝘶𝘳𝘴𝘦𝘭𝘧"
       </h1>
         <h3 className="text-center text-yellow-500-600">-Destritube of India</h3>
-      <section className="rounded-xl border border-emerald-200 bg-blue font-bold p-4 shadow-sm reveal scale-in transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-        <h2 className="text-lg font-bold text-blue-900 ">Post a Photo to Raise Awareness</h2>
-        <p className="text-sm text-slate-600 mt-1">Please share only relevant images aimed at seeking help or highlighting genuine need. Inappropriate or irrelevant posts may lead to a ban and be reported.</p>
-      </section>
+        
+<h3 className="text-center text-lg md:text-xl lg:text-2xl font-bold text-blue-600 relative">
+  <span className="relative z-10">
+    DestitutesOfIndia is committed to shining a light on the lives of those often overlooked. Through collaboration, transparency, and compassion, we connect communities, volunteers, and organizations to provide timely and meaningful support.
+  </span>
+  <span className="absolute inset-0 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 opacity-20 blur-lg rounded-lg animate-pulse text-style-italic"></span>
+</h3>
+
+
+  
+        <div className="flex flex-col sm:flex-row justify-center gap-6">
+         <GreenCTAButton type="donate" />
+      <GreenCTAButton type="contact" />
+      </div>
 
       {/* Understanding section: illustrative examples (carousel) */}
       <section className=" flex  grid-cols-1 lg:grid-cols-9 gap-6 reveal justify-center ">
