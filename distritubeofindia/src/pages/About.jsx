@@ -1,162 +1,101 @@
 export default function About() {
   return (
-    <div className="space-y-12">
-      <section className="box rounded-xl bg-gradient-to-r from-sky-500 via-indigo-600 to-fuchsia-600 text-white p-8 sm:p-12 shadow-lg reveal">
-        <h1 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">About Destitutes of India</h1>
-        <p className="opacity-95 max-w-3xl text-lg leading-relaxed">
-          A citizen-led initiative to responsibly surface genuine needs from the ground, connect people with
-          help, and raise awareness — with dignity and impact at the core.
-        </p>
-      </section>
-
-      {/* <section className="space-y-6 reveal">
-        <h2 className="section-title text-2xl font-semibold text-slate-900">What We Do</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="card rounded-lg border p-6 bg-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex gap-4 reveal">
-            <span className="material-symbols-outlined text-sky-600 text-3xl float">photo_camera</span>
+    <div className="space-y-16">
+      {/* Section 1: About */}
+      <section className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-screen-lg mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h3 className="font-semibold text-lg mb-2 gradient-text">Responsible Reporting</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">Location-tagged posts that focus on genuine needs with respect and dignity.</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                About Destitutes of India
+              </h1>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                A citizen-led initiative to responsibly surface genuine needs from the ground, connect people with help, and raise awareness—with dignity and impact at the core.
+              </p>
             </div>
-          </div>
-          <div className="card rounded-lg border p-6 bg-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex gap-4 reveal" style={{ transitionDelay: '0.1s' }}>
-            <span className="material-symbols-outlined text-indigo-600 text-3xl float">visibility_off</span>
-            <div>
-              <h3 className="font-semibold text-lg mb-2 gradient-text">Anonymous Option</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">Post anonymously while preserving accountability and trust.</p>
-            </div>
-          </div>
-          <div className="card rounded-lg border p-6 bg-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex gap-4 reveal" style={{ transitionDelay: '0.2s' }}>
-            <span className="material-symbols-outlined text-fuchsia-600 text-3xl float">diversity_2</span>
-            <div>
-              <h3 className="font-semibold text-lg mb-2 gradient-text">Connect & Amplify</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">Help NGOs, volunteers, and citizens find where to help effectively.</p>
+            <div className="bg-gradient-to-br from-blue-100 to-blue-200 h-64 rounded-xl flex items-center justify-center">
+              <span className="text-primary text-lg font-medium">Illustration Placeholder</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="space-y-6 reveal">
-        <h2 className="section-title text-2xl font-semibold text-slate-900">Our Values</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="card rounded-lg border p-6 bg-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 reveal">
-            <h3 className="font-semibold text-lg mb-3 flex items-center gap-3">
-              <span className="material-symbols-outlined text-rose-600 text-2xl bounce">favorite</span>
-              <span className="gradient-text">Dignity</span>
-            </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">Respect privacy and portray people with care and compassion.</p>
-          </div>
-          <div className="card rounded-lg border p-6 bg-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 reveal" style={{ transitionDelay: '0.1s' }}>
-            <h3 className="font-semibold text-lg mb-3 flex items-center gap-3">
-              <span className="material-symbols-outlined text-emerald-600 text-2xl bounce">verified</span>
-              <span className="gradient-text">Authenticity</span>
-            </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">Keep posts relevant, truthful, and genuinely helpful to the community.</p>
-          </div>
-          <div className="card rounded-lg border p-6 bg-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 reveal" style={{ transitionDelay: '0.2s' }}>
-            <h3 className="font-semibold text-lg mb-3 flex items-center gap-3">
-              <span className="material-symbols-outlined text-amber-500 text-2xl bounce">insights</span>
-              <span className="gradient-text">Impact</span>
-            </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">Enable timely responses and measurable positive change in communities.</p>
+      {/* Section 2: Our Values */}
+      <section className="py-16">
+        <div className="max-w-screen-lg mx-auto px-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-12">
+            Our Values
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Value 1: Dignity */}
+            <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-md p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-blue-100">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-primary mb-4">
+                <span className="material-symbols-outlined text-xl">favorite</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Dignity</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Respect privacy and portray people with care and compassion.
+              </p>
+            </div>
+
+            {/* Value 2: Authenticity */}
+            <div className="bg-gradient-to-br from-white to-green-50 rounded-2xl shadow-md p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-green-100">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-green-100 to-green-200 text-secondary mb-4">
+                <span className="material-symbols-outlined text-xl">verified</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Authenticity</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Keep posts relevant, truthful, and genuinely helpful.
+              </p>
+            </div>
+
+            {/* Value 3: Impact */}
+            <div className="bg-gradient-to-br from-white to-orange-50 rounded-2xl shadow-md p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-orange-100">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-orange-200 text-accent mb-4">
+                <span className="material-symbols-outlined text-xl">insights</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Impact</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Enable timely responses and measurable positive change in communities.
+              </p>
+            </div>
+
+            {/* Value 4: Anonymous Option */}
+            <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-md p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-blue-100">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-primary mb-4">
+                <span className="material-symbols-outlined text-xl">visibility_off</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Anonymous Option</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Post anonymously while preserving accountability and trust.
+              </p>
+            </div>
+
+            {/* Value 5: Responsible Reporting */}
+            <div className="bg-gradient-to-br from-white to-green-50 rounded-2xl shadow-md p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-green-100">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-green-100 to-green-200 text-secondary mb-4">
+                <span className="material-symbols-outlined text-xl">photo_camera</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Responsible Reporting</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Location-tagged posts that focus on genuine needs with respect and dignity.
+              </p>
+            </div>
+
+            {/* Value 6: Connect & Amplify */}
+            <div className="bg-gradient-to-br from-white to-orange-50 rounded-2xl shadow-md p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-orange-100">
+              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-orange-200 text-accent mb-4">
+                <span className="material-symbols-outlined text-xl">diversity_2</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Connect & Amplify</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Help NGOs, volunteers, and citizens find where to help effectively.
+              </p>
+            </div>
           </div>
         </div>
       </section>
-
-      <section className="box rounded-xl border bg-white p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 reveal">
-        <div className="space-y-3">
-          <h3 className="text-xl font-semibold text-slate-900 gradient-text">Partner with us</h3>
-          <p className="text-sm text-slate-600 leading-relaxed max-w-md">NGOs, volunteers, and authorities — let's collaborate for faster, more effective help delivery.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <a href="/donate" className="btn-primary px-6 py-3 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:scale-105">
-            <span className="material-symbols-outlined">volunteer_activism</span>
-            Donate
-          </a>
-          <a href="/contact" className="btn-secondary px-6 py-3 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:scale-105">
-            <span className="material-symbols-outlined">mail</span>
-            Contact
-          </a>
-        </div>
-      </section> */} 
-     
-  <section className="space-y-6 reveal">
-         <h2 className="section-title text-2xl font-semibold text-slate-900">What We Do</h2>
-         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div className="card rounded-lg border p-6 bg-gradient-to-br from-white to-sky-50 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex gap-4 reveal animate-fadeUp">
-      <span className="material-symbols-outlined text-sky-600 text-3xl float">photo_camera</span>
-      <div>
-        <h3 className="font-semibold text-lg mb-2 gradient-text">Responsible Reporting</h3>
-        <p className="text-sm text-slate-600 leading-relaxed">Location-tagged posts that focus on genuine needs with respect and dignity.</p>
-      </div>
     </div>
-
-    <div className="card rounded-lg border p-6 bg-gradient-to-br from-white to-indigo-50 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex gap-4 reveal animate-fadeUp" style={{ transitionDelay: '0.1s' }}>
-      <span className="material-symbols-outlined text-indigo-600 text-3xl float">visibility_off</span>
-      <div>
-        <h3 className="font-semibold text-lg mb-2 gradient-text">Anonymous Option</h3>
-        <p className="text-sm text-slate-600 leading-relaxed">Post anonymously while preserving accountability and trust.</p>
-      </div>
-    </div>
-
-    <div className="card rounded-lg border p-6 bg-gradient-to-br from-white to-fuchsia-50 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex gap-4 reveal animate-fadeUp" style={{ transitionDelay: '0.2s' }}>
-      <span className="material-symbols-outlined text-fuchsia-600 text-3xl float">diversity_2</span>
-      <div>
-        <h3 className="font-semibold text-lg mb-2 gradient-text">Connect & Amplify</h3>
-        <p className="text-sm text-slate-600 leading-relaxed">Help NGOs, volunteers, and citizens find where to help effectively.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section className="space-y-6 reveal">
-  <h2 className="section-title text-2xl font-semibold text-slate-900">Our Values</h2>
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-    <div className="card rounded-lg border p-6 bg-gradient-to-br from-white to-rose-50 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 reveal animate-fadeUp">
-      <h3 className="font-semibold text-lg mb-3 flex items-center gap-3">
-        <span className="material-symbols-outlined text-rose-600 text-2xl animate-bounce">favorite</span>
-        <span className="gradient-text">Dignity</span>
-      </h3>
-      <p className="text-sm text-slate-600 leading-relaxed">Respect privacy and portray people with care and compassion.</p>
-    </div>
-
-    <div className="card rounded-lg border p-6 bg-gradient-to-br from-white to-emerald-50 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 reveal animate-fadeUp" style={{ transitionDelay: '0.1s' }}>
-      <h3 className="font-semibold text-lg mb-3 flex items-center gap-3">
-        <span className="material-symbols-outlined text-emerald-600 text-2xl animate-bounce">verified</span>
-        <span className="gradient-text">Authenticity</span>
-      </h3>
-      <p className="text-sm text-slate-600 leading-relaxed">Keep posts relevant, truthful, and genuinely helpful to the community.</p>
-    </div>
-
-    <div className="card rounded-lg border p-6 bg-gradient-to-br from-white to-amber-50 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 reveal animate-fadeUp" style={{ transitionDelay: '0.2s' }}>
-      <h3 className="font-semibold text-lg mb-3 flex items-center gap-3">
-        <span className="material-symbols-outlined text-amber-500 text-2xl animate-bounce">insights</span>
-        <span className="gradient-text">Impact</span>
-      </h3>
-      <p className="text-sm text-slate-600 leading-relaxed">Enable timely responses and measurable positive change in communities.</p>
-    </div>
-  </div>
-</section>
-
-<section className="box rounded-xl border bg-gradient-to-r from-white to-emerald-50 p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 reveal animate-fadeUp">
-  <div className="space-y-3">
-    <h3 className="text-xl font-semibold text-slate-900 gradient-text">Partner with us</h3>
-    <p className="text-sm text-slate-600 leading-relaxed max-w-md">NGOs, volunteers, and authorities — let's collaborate for faster, more effective help delivery.</p>
-  </div>
-  <div className="flex items-center gap-3">
-    <a href="/donate" className="btn-primary px-6 py-3 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:scale-110 hover:shadow-md">
-      <span className="material-symbols-outlined">volunteer_activism</span>
-      Donate
-    </a>
-    <a href="/contact" className="btn-secondary px-6 py-3 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:scale-110 hover:shadow-md">
-      <span className="material-symbols-outlined">mail</span>
-      Contact
-    </a>
-  </div>
-   </section>
-
-
-</div>
   )
 }
-

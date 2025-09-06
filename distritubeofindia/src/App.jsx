@@ -102,20 +102,35 @@ function Navbar() {
           </button>
           <nav className="hidden lg:flex text-sm items-center gap-6"> 
             <NavLink to="/" className={({isActive}) => 
-              `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
-            }>Home</NavLink>
+              `nav-link px-3 py-2 rounded-lg transition-all duration-300 flex items-center gap-1 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+            }>
+              <span className="material-symbols-outlined text-blue-500 text-lg">home</span>
+              Home
+            </NavLink>
             <NavLink to="/about" className={({isActive}) => 
-              `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
-            }>About</NavLink>
-            <NavLink to="/mission-vision" className={({isActive}) => 
-              `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
-            }>Mission & Vision</NavLink>
+              `nav-link px-3 py-2 rounded-lg transition-all duration-300 flex items-center gap-1 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+            }>
+              <span className="material-symbols-outlined text-blue-500 text-lg">info</span>
+              About
+            </NavLink>
+            <NavLink to="/mission-vission" className={({isActive}) => 
+              `nav-link px-3 py-2 rounded-lg transition-all duration-300 flex items-center gap-1 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+            }>
+              <span className="material-symbols-outlined text-blue-500 text-lg">visibility</span>
+              Mission_Vision
+            </NavLink>
             <NavLink to="/donate" className={({isActive}) => 
-              `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
-            }>Donate</NavLink>
+              `nav-link px-3 py-2 rounded-lg transition-all duration-300 flex items-center gap-1 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+            }>
+              <span className="material-symbols-outlined text-blue-500 text-lg">volunteer_activism</span>
+              Donate
+            </NavLink>
             <NavLink to="/contact" className={({isActive}) => 
-              `nav-link px-3 py-2 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
-            }>Contact</NavLink>
+              `nav-link px-3 py-2 rounded-lg transition-all duration-300 flex items-center gap-1 ${isActive ? 'bg-white/20 underline' : 'opacity-90 hover:opacity-100 hover:bg-white/10'}`
+            }>
+              <span className="material-symbols-outlined text-blue-500 text-lg">mail</span>
+              Contact
+            </NavLink>
           </nav>
           <div className="hidden lg:flex items-center gap-3">
             {user ? (
@@ -156,20 +171,35 @@ function Navbar() {
             </div>
             <nav className="space-y-4 mb-8">
               <NavLink to="/" className={({isActive}) => 
-                `block px-4 py-3 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
-              } onClick={() => setMenuOpen(false)}>Home</NavLink>
+                `px-4 py-3 rounded-lg transition-all duration-300 flex items-center ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
+              } onClick={() => setMenuOpen(false)}>
+                <span className="material-symbols-outlined text-blue-500 text-lg mr-2">home</span>
+                Home
+              </NavLink>
               <NavLink to="/about" className={({isActive}) => 
-                `block px-4 py-3 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
-              } onClick={() => setMenuOpen(false)}>About</NavLink>
+                `px-4 py-3 rounded-lg transition-all duration-300 flex items-center ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
+              } onClick={() => setMenuOpen(false)}>
+                <span className="material-symbols-outlined text-blue-500 text-lg mr-2">info</span>
+                About
+              </NavLink>
               <NavLink to="/mission-vision" className={({isActive}) => 
-                `block px-4 py-3 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
-              } onClick={() => setMenuOpen(false)}>Mission & Vision</NavLink>
+                `px-4 py-3 rounded-lg transition-all duration-300 flex items-center ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
+              } onClick={() => setMenuOpen(false)}>
+                <span className="material-symbols-outlined text-blue-500 text-lg mr-2">visibility</span>
+                Mission & Vision
+              </NavLink>
               <NavLink to="/donate" className={({isActive}) => 
-                `block px-4 py-3 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
-              } onClick={() => setMenuOpen(false)}>Donate</NavLink>
+                `px-4 py-3 rounded-lg transition-all duration-300 flex items-center ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
+              } onClick={() => setMenuOpen(false)}>
+                <span className="material-symbols-outlined text-blue-500 text-lg mr-2">volunteer_activism</span>
+                Donate
+              </NavLink>
               <NavLink to="/contact" className={({isActive}) => 
-                `block px-4 py-3 rounded-lg transition-all duration-300 ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
-              } onClick={() => setMenuOpen(false)}>Contact</NavLink>
+                `px-4 py-3 rounded-lg transition-all duration-300 flex items-center ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
+              } onClick={() => setMenuOpen(false)}>
+                <span className="material-symbols-outlined text-blue-500 text-lg mr-2">mail</span>
+                Contact
+              </NavLink>
             </nav>
             <div className="space-y-4">
               {user ? (
@@ -217,7 +247,7 @@ function Footer() {
     //     </nav>
     //   </div>
     // </footer>
-      <footer className="w-full bg-green-900 text-slate-200 py-10 mt-10 reveal">
+      <footer className="w-full bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 text-slate-200 py-10 mt-10 reveal">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Logo + About */}
         <div className="space-y-3">
@@ -233,16 +263,16 @@ function Footer() {
           <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="/" className="hover:text-emerald-400 transition">Home</a>
+              <a href="/" className="hover:text-blue-400 transition">Home</a>
             </li>
             <li>
-              <a href="/about" className="hover:text-emerald-400 transition">About Us</a>
+              <a href="/about" className="hover:text-blue-400 transition">About Us</a>
             </li>
             <li>
-              <a href="/news" className="hover:text-emerald-400 transition">News</a>
+              <a href="/news" className="hover:text-blue-400 transition">News</a>
             </li>
             <li>
-              <a href="/contact" className="hover:text-emerald-400 transition">Contact</a>
+              <a href="/contact" className="hover:text-blue-400 transition">Contact</a>
             </li>
           </ul>
         </div>
@@ -252,16 +282,16 @@ function Footer() {
           <h3 className="text-lg font-semibold mb-3">Support</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="/donate" className="hover:text-emerald-400 transition">Donate</a>
+              <a href="/donate" className="hover:text-green-400 transition">Donate</a>
             </li>
             <li>
-              <a href="/volunteer" className="hover:text-emerald-400 transition">Volunteer</a>
+              <a href="/volunteer" className="hover:text-green-400 transition">Volunteer</a>
             </li>
             <li>
-              <a href="/privacy" className="hover:text-emerald-400 transition">Privacy Policy</a>
+              <a href="/privacy" className="hover:text-green-400 transition">Privacy Policy</a>
             </li>
             <li>
-              <a href="/terms" className="hover:text-emerald-400 transition">Terms of Service</a>
+              <a href="/terms" className="hover:text-green-400 transition">Terms of Service</a>
             </li>
           </ul>
         </div>

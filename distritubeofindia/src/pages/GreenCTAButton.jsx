@@ -6,7 +6,7 @@ export default function GreenCTAButton({ type = "donate" }) {
   return (
     <Link
       to={isDonate ? "/donate" : "/contact"}
-      className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-emerald-400 relative overflow-hidden group"
+      className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-emerald-400 relative overflow-hidden group"
     >
       <span className="material-symbols-outlined">
         {isDonate ? "volunteer_activism" : "mail"}
