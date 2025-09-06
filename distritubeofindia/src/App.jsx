@@ -89,7 +89,7 @@ function Navbar() {
 
   return (
     <>
-      <header className={`sticky top-0 z-40 text-black transition-all duration-300 ${scrolled ? 'backdrop-blur supports-[backdrop-filter]:bg-white/10 shadow-xl' : ''}`}
+      <header className={`sticky top-0 z-40 text-white transition-all duration-300 ${scrolled ? 'backdrop-blur supports-[backdrop-filter]:bg-white/10 shadow-xl' : ''}`}
         style={{ background: 'linear-gradient(10deg,rgb(63, 10, 121),rgb(169, 19, 210),rgb(17, 76, 214)))' }}>
         <div className={`container-responsive flex items-center justify-between ${scrolled ? 'h-14' : 'h-16'} transition-all duration-300`}>
           <NavLink to="/" className="font-bold tracking-wide flex items-center gap-2 hover:scale-105 transition-transform duration-300">
@@ -182,7 +182,7 @@ function Navbar() {
                 <span className="material-symbols-outlined text-blue-500 text-lg mr-2">info</span>
                 About
               </NavLink>
-              <NavLink to="/mission-vision" className={({isActive}) => 
+              <NavLink to="/MissionVision" className={({isActive}) => 
                 `px-4 py-3 rounded-lg transition-all duration-300 flex items-center ${isActive ? 'bg-white/20' : 'hover:bg-white/10'}`
               } onClick={() => setMenuOpen(false)}>
                 <span className="material-symbols-outlined text-blue-500 text-lg mr-2">visibility</span>

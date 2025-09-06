@@ -656,9 +656,9 @@ export default function Home() {
       )}
       
         
-        <h3 className="text-5xl font-bold text-blue-600 text-center mt-3">Destritube of India</h3>
+        <h3 className="text-5xl font-bold text-white text-center mt-3">Destitute of India</h3>
         
-<h3 className="text-center text-lg md:text-xl lg:text-1xl font-bold text-blue-600 relative">
+<h3 className="text-center text-lg md:text-xl lg:text-1xl font-bold text-white relative">
   <span className="relative z-10">
     DestitutesOfIndia is committed to shining a light on the lives of those often overlooked. Through collaboration, transparency, and compassion, we connect communities, volunteers, and organizations to provide timely and meaningful support.
   </span>
@@ -713,8 +713,9 @@ export default function Home() {
                   </span>
                 ))}
               </div>
-            </div>
-            <p className="text-sm text-gray-600">Based on {posts.length} posts</p>
+              </div>
+            {/* </div>  {posts.length} */}
+            <p className="text-sm text-gray-600">Based on 20 posts</p>
           </div>
           <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined text-2xl text-secondary">star</span>
@@ -737,12 +738,13 @@ export default function Home() {
 
       {/* Understanding section: illustrative examples (carousel) */}
       <section className=" flex  grid-cols-1 lg:grid-cols-9 gap-6 reveal justify-center ">
-  <div className="lg:col-span-3 lg:order-1 ">
+  <div className=" bg-blue-600 lg:col-span-3 lg:order-1  rounded-xl">
     {/* Outer wrapper with animated glow */}
     <div className="relative">
-      <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-green-400 via-emerald-500 to-blue-500 animate-pulse blur opacity-70"></div>
-      <div className="relative rounded-xl border border-emerald-300 bg-gradient-to-br from-green-200 via-green-300 to-blue-500 p-5 shadow-lg space-y-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl reveal slide-in-left">
-        <h3 className="text-center text-2xl font-bold text-green-600 animate-pulse drop-shadow-lg">
+      <div className=""></div>
+      <div className="  relative rounded-xl border border-emerald-300 bg-blue/600 p-5 shadow-lg space-y-4 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl reveal slide-in-left">
+    
+        <h3 className="text-center text-2xl font-bold text-white animate-pulse drop-shadow-lg">
           ✨ Create a Post ✨
         </h3>
         {loading ? (
